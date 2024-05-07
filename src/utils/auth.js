@@ -40,4 +40,21 @@ const validateSignUpInput = (name, email, password, age, number) => {
   };
 };
 
-module.exports = { generateToken, validateSignUpInput };
+const validateLoginInput = (email, password) => {
+  const errors = {};
+  if (!email) {
+    errors.email = "Email must not be empty";
+  }
+  if (!password) {
+    errors.password = "Password must not be empty";
+  }
+  if (email && !validator.isEmail(email)) {
+    errors.email = "Email must be a valid email address";
+  }
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1,
+  };
+};
+
+module.exports = { generateToken, validateSignUpInput, validateLoginInput };

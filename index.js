@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
+const { applyMiddleware } = require("graphql-middleware");
 const { userResolvers } = require("./src/resolvers/userResolvers");
 const { userTypeDefs } = require("./src/schema/userSchema");
 require("dotenv").config();
@@ -33,8 +34,10 @@ const schema = makeExecutableSchema({
   resolvers,
 });
 
+const schemaWithMiddleware = applyMiddleware(schema);
+
 const server = new ApolloServer({
-  schema: schema,
+  schema: schemaWithMiddleware,
   context: ({ req }) => ({ req }),
   introspection: true,
   playground: true,
