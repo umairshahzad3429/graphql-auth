@@ -10,7 +10,6 @@ const { authMiddleware } = require("../utils/authMiddleware");
 
 const userResolvers = {
   Query: {
-    greet: () => "Hello World",
     getUserDetails: async (_, __, context) => {
       const user = authMiddleware(context);
       const userDetails = await User.findOne({ _id: user.id });

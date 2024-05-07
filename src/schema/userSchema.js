@@ -17,7 +17,6 @@ const userTypeDefs = /* GraphQL */ `
   }
 
   type Query {
-    greet: String
     getUserDetails: User!
   }
 

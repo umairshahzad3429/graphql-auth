@@ -2,12 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const { applyMiddleware } = require("graphql-middleware");
-const { userResolvers } = require("./src/resolvers/userResolvers");
-const { userTypeDefs } = require("./src/schema/userSchema");
 require("dotenv").config();
 
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 const { ApolloServer } = require("apollo-server-express");
+const resolvers = require("./src/resolvers/index");
+const typeDefs = require("./src/schema/index");
 
 const app = express();
 
@@ -17,16 +17,6 @@ mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("DB CONNECTED SUCCESSFULLY!"))
   .catch((err) => console.error(err));
-
-// Combine type definitions
-const typeDefs = `
-${userTypeDefs}
-`;
-
-// Combine resolvers
-const resolvers = {
-  ...userResolvers,
-};
 
 // Create executable schema
 const schema = makeExecutableSchema({
