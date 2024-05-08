@@ -4,7 +4,11 @@ const Post = require("../models/Post");
 
 const postResolvers = {
   Query: {
-    greetWorld: () => "Hello",
+    getPosts: async (_, __, context) => {
+      const user = authMiddleware(context);
+      const allPosts = await Post.find({ userId: user.id });
+      return allPosts;
+    },
   },
   Mutation: {
     createPost: async (_, { postInput }, context) => {
@@ -37,6 +41,21 @@ const postResolvers = {
         ...res._doc,
         id: res._id,
       };
+    },
+
+    updatePost: async (_, { id, postInput }, context) => {
+      authMiddleware(context);
+      const filterQuery = { _id: id };
+      await Post.updateOne(filterQuery, postInput);
+      const postData = await Post.findOne(filterQuery);
+      return postData;
+    },
+
+    deletePost: async (_, { id }, context) => {
+      authMiddleware(context);
+      const filterQuery = { _id: id };
+      await Post.deleteOne(filterQuery);
+      return true;
     },
   },
 };

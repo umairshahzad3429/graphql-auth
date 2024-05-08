@@ -12,11 +12,13 @@ const postTypeDefs = /* GraphQL */ `
   }
 
   type Query {
-    greetWorld: String!
+    getPosts: [Post]!
   }
 
   type Mutation {
     createPost(postInput: PostInput): Post!
+    updatePost(id: ID!, postInput: PostInput): Post!
+    deletePost(id: ID!): Boolean
   }
 `;
 module.exports = { postTypeDefs };
