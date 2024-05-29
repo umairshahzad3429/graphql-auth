@@ -1,6 +1,7 @@
 const { UserInputError } = require("apollo-server-express");
 const { authMiddleware } = require("../utils/authMiddleware");
 const Post = require("../models/Post");
+const { fetchAllPostsbyUser } = require("../services/postServices");
 
 const postResolvers = {
   Query: {
@@ -9,6 +10,9 @@ const postResolvers = {
       const allPosts = await Post.find({ userId: user.id });
       return allPosts;
     },
+    getPostsByUser : async (_, {userId}) => {
+      await fetchAllPostsbyUser(userId)
+    }
   },
   Mutation: {
     createPost: async (_, { postInput }, context) => {

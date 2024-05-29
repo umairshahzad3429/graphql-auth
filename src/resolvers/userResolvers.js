@@ -7,6 +7,7 @@ const {
   validateLoginInput,
 } = require("../utils/auth");
 const { authMiddleware } = require("../utils/authMiddleware");
+const { signUpService, loginService } = require("../services/authServices");
 
 const userResolvers = {
   Query: {
@@ -24,7 +25,7 @@ const userResolvers = {
     async signUp(_, { signUpInput }) {
       const { name, email, password, age, number } = signUpInput || {};
 
-      const { valid, errors } = validateSignUpInput(
+      const { token, res } = await signUpService(
         name,
         email,
         password,
@@ -32,22 +33,6 @@ const userResolvers = {
         number
       );
 
-      if (!valid) {
-        throw new UserInputError("Errors", { errors });
-      }
-
-      const hashPass = await bcrypt.hash(password, 12);
-      const newUser = new User({
-        name,
-        email,
-        password: hashPass,
-        age,
-        number,
-      });
-
-      const res = await newUser.save();
-
-      const token = generateToken(res);
       return {
         ...res._doc,
         id: res._id,
@@ -56,21 +41,8 @@ const userResolvers = {
     },
 
     async login(_, { email, password }) {
-      const { valid, errors } = validateLoginInput(email, password);
-      if (!valid) {
-        throw new UserInputError("Errors", { errors });
-      }
-      const user = await User.findOne({ email });
-      if (!user) {
-        errors.general = "User not found";
-        throw new UserInputError("User not found", { errors });
-      }
-      const match = await bcrypt.compare(password, user.password);
-      if (!match) {
-        errors.general = "Wrong credentials";
-        throw new UserInputError("Wrong credentials", { errors });
-      }
-      const token = generateToken(user);
+      const { token, user } = await loginService(email, password);
+
       return {
         ...user._doc,
         id: user._id,

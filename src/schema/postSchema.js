@@ -4,6 +4,8 @@ const postTypeDefs = /* GraphQL */ `
     userId: ID!
     title: String!
     description: String!
+    name: String!
+    companyName: String!
   }
 
   input PostInput {
@@ -13,6 +15,7 @@ const postTypeDefs = /* GraphQL */ `
 
   type Query {
     getPosts: [Post]!
+    getPostsByUser(userId: ID!): [Post]!
   }
 
   type Mutation {
