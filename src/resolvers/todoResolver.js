@@ -1,10 +1,7 @@
-const { UserInputError } = require("apollo-server-express");
-const { authMiddleware } = require("../utils/authMiddleware");
-const Post = require("../models/Post");
-const { fetchAllPostsbyUser } = require("../services/postServices");
 const {
   fetchAllTodobyUser,
   createTodoService,
+  updateTodoService,
 } = require("../services/todoServices");
 
 const todoResolver = {
@@ -23,6 +20,11 @@ const todoResolver = {
         ...res._doc,
         id: res._id,
       };
+    },
+
+    updateTodo: async (_, { id, todoInput }, context) => {
+      const updatedTodo = updateTodoService(id, todoInput, context);
+      return updatedTodo;
     },
   },
 };
